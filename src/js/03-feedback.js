@@ -1,35 +1,42 @@
 import throttle from 'lodash.throttle';
 
-const LOCALSTORAGE_KEY = 'feedback-form-state';
-let formData = {};
+const refs = {
+  form: document.querySelector('.feedback-form'),
+  textarea: document.querySelector('.feedback-form textarea'),
+  email: document.querySelector('.feedback-form input'),
+};
 
-const formEl = document.querySelector('.feedback-form');
-const email = document.querySelector('email');
-const message = document.querySelector('message');
+const formData = {};
+const STORAGE_KEY = 'feedback-form-state';
+const savedData = localStorage.getItem(STORAGE_KEY, JSON.stringify(formData));
+const parsedData = JSON.parse(savedData);
 
-fillingForm();
+refs.form.addEventListener('submit', onFormSubmit);
+refs.form.addEventListener('input', throttle(onInput, 500));
 
-formEl.addEventListener('input', throttle(onInput, 500));
-formEl.addEventListener('submit', onFormSubmit);
+refs.form.addEventListener('input', e => {
+  formData[e.target.name] = e.target.value;
+});
 
-function onFormSubmit(evt) {
-  evt.preventDefault();
-  console.log(JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)));
-  evt.currentTarget.reset();
-  localStorage.removeItem(LOCALSTORAGE_KEY);
-  formData = {};
+entryFormInput();
+
+function onInput() {
+  return localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
-function onInput(evt) {
-  formData[evt.target.name] = evt.target.value;
-  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(formData));
+function onFormSubmit(e) {
+  e.preventDefault();
+
+  console.log(formData);
+  e.currentTarget.reset();
+  localStorage.removeItem(STORAGE_KEY);
 }
 
-function fillingForm() {
-  const parsedData = localStorage.getItem(LOCALSTORAGE_KEY);
-  if (parsedData) {
-    const formKeys = JSON.parse(parsedData);
-    if (formKeys.email !== undefined) email.value = formKeys.email;
-    if (formKeys.message !== undefined) message.value = formKeys.message;
+function entryFormInput() {
+  const savedlocalStorage = localStorage.getItem(STORAGE_KEY);
+
+  if (savedlocalStorage) {
+    refs.form.email.value = parsedData.email;
+    refs.form.message.value = parsedData.message;
   }
 }

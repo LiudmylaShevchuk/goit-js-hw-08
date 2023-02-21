@@ -15,6 +15,7 @@ const currentTime = function (data) {
     JSON.stringify(data.seconds)
   );
   let time = Number(localStorage.getItem('videoplayer-current-time'));
+  time = Math.round(time);
   console.log(time);
 };
 player.on('timeupdate', throttle(currentTime, 1000));
