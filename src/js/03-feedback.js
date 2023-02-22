@@ -26,8 +26,11 @@ function onInput() {
 
 function onFormSubmit(e) {
   e.preventDefault();
-
+  if (refs.email.value === '' || refs.textarea.value === '') {
+    alert('Please, fill the form!');
+  }
   console.log(formData);
+
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
 }
