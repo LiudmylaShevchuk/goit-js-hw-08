@@ -24,7 +24,7 @@ function entryFormInput() {
   let savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
   if (savedData) {
     Object.entries(savedData).forEach(([name, value]) => {
-      form.elements[name].value = value;
+      refs.form.elements[name].value = value;
     });
   }
 }
